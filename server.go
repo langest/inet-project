@@ -33,15 +33,11 @@ func readFile(fileName string) string {
 			panic(err)
 		}
 	}()
-	reader := bufio.NewReader(file)
+	scanner := bufio.NewScanner(file)
 
 	lines := make([]string, 1024)
-	for 0 < reader.Buffered() {
-		line, _, err := reader.ReadLine()
-		if err != nil {
-			panic(err)
-		}
-		lines = append(lines, string(line))
+	for scanner.Scan() {
+		lines = append(lines, scanner.Text())
 	}
 	return strings.Join(lines, "")
 }
