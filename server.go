@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -16,7 +17,10 @@ var (
 func main() {
 	response = readFile("testPage.html")
 	http.HandleFunc("/", handler) //Redirect all urls to handler function
-	http.ListenAndServe("localhost:8080", nil)
+	err := http.ListenAndServeTLS("localhost:8080", filePath+"cert.pem", filePath+"key.pem", nil)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
