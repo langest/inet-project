@@ -16,7 +16,6 @@ var (
 )
 
 func main() {
-	response = readFile("testPage.html")
 	http.HandleFunc("/", handler) //Redirect all urls to handler function
 	http.HandleFunc("/login", handleLogin)
 	err := http.ListenAndServeTLS("localhost:8080", filePath+"cert.pem", filePath+"key.pem", nil)
@@ -32,11 +31,13 @@ func handler(w http.ResponseWriter, r *http.Request) {
 func handleLogin(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		fmt.Fprintf(w, readFile("login.html"))
+		fmt.Println("No post request")
 	} else {
-		name := r.FormValue("username")
-		pass := r.FormValue("password")
+		username := r.FormValue("username")
+		password := r.FormValue("password")
 		fmt.Printf("username: %s, password: %s\n", username, password)
-		fmt.Fprintf(w, readFile("testPage.html"))
+		fmt.Fprintf(w, readFile("login.html"))
+		fmt.Println("Post request")
 	}
 }
 
