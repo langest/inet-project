@@ -11,7 +11,6 @@ import (
 )
 
 var (
-	response string
 	filePath = "test/"
 	store    = sessions.NewCookieStore([]byte("something-very-secret"))
 )
@@ -27,11 +26,18 @@ func main() {
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, response)
+	fmt.Fprintf(w, readFile("testPage.html"))
 }
 
 func handleLogin(w http.ResponseWriter, r *http.Request) {
-	//TODO
+	if r.Method != "POST" {
+		fmt.Fprintf(w, readFile("login.html"))
+	} else {
+		name := r.FormValue("username")
+		pass := r.FormValue("password")
+		fmt.Printf("username: %s, password: %s\n", username, password)
+		fmt.Fprintf(w, readFile("testPage.html"))
+	}
 }
 
 func readFile(fileName string) string {
