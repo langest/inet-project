@@ -1,12 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
+		<script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/md5.js"></script>
 	</head>
 	<body>
-		<form id="1" method="post" action="/login">
-			Username: <input type="text" name="username" placeholder="Jane Doe"><br>
-			Password: <input type="password" name="password" placeholder="1234"><br>
-		<input type="submit"/>
+		<script type="text/javascript">
+			function submitform() {
+				document.forms["loginform"].submit();
+			}
+		</script>
+		<form id="loginform" method="post" action="/login">
+			Username: <input id="usr" type="text" name="username" placeholder="Jane Doe"><br>
+			Password: <input id="pwd" type="password" name="password" placeholder="1234"><br>
+			<input id="login" type="button" value="Login" onclick="javascript: submitform();"/>
 		</form>
 	</body>
 </html>
