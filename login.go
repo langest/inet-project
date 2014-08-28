@@ -3,7 +3,6 @@ package main
 import (
 	"crypto/rand"
 	"errors"
-	"fmt"
 	"io"
 	"log"
 
@@ -32,17 +31,17 @@ func hashPassword(password string) string {
 		log.Fatal(err)
 	}
 
-	return hash
+	return string(hash)
 }
 
 func NewUser(newUsername, newPassword string) {
 	currentUser = newUsername
-	currentpassword = hashPassword(newPassword)
+	currentPassword = hashPassword(newPassword)
 }
 
 func Login(username, password string) (string, error) {
 	if username == currentUser && hashPassword(password) == currentPassword {
 		return username, nil
 	}
-	return nil, errors.New("login")
+	return "", errors.New("login")
 }
