@@ -39,9 +39,9 @@ func NewUser(newUsername, newPassword string) {
 	currentPassword = newPassword
 }
 
-func Login(username, password string) (string, error) {
+func Login(username, password string) error {
 	if username == currentUser && password == currentPassword {
-		return username, nil
+		return nil
 	}
-	return "", errors.New("login")
+	return errors.New("login")
 }
