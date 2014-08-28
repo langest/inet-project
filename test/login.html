@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/md5.js"></script>
+		<script src="https://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/sha256.js"></script>
 	</head>
 	<body>
 		<script type="text/javascript">
 			function submitform() {
+				document.forms["loginform"].pwd.value = CryptoJS.SHA256(document.forms["loginform"].pwd.value);
 				document.forms["loginform"].submit();
 			}
 		</script>
