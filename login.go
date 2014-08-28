@@ -36,11 +36,11 @@ func hashPassword(password string) string {
 
 func NewUser(newUsername, newPassword string) {
 	currentUser = newUsername
-	currentPassword = hashPassword(newPassword)
+	currentPassword = newPassword
 }
 
 func Login(username, password string) (string, error) {
-	if username == currentUser && hashPassword(password) == currentPassword {
+	if username == currentUser && password == currentPassword {
 		return username, nil
 	}
 	return "", errors.New("login")
