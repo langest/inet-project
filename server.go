@@ -16,7 +16,7 @@ var (
 )
 
 func main() {
-	http.HandleFunc("/", handler) //Redirect all urls to handler function
+	http.HandleFunc("/", handleIndex) //Redirect all urls to handler function
 	http.HandleFunc("/login", handleLogin)
 	http.HandleFunc("/register", handleRegister)
 	err := http.ListenAndServeTLS("localhost:8080", filePath+"cert.pem", filePath+"key.pem", nil)
@@ -25,25 +25,33 @@ func main() {
 	}
 }
 
-func handler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, readFile("testPage.html"))
+func handleIndex(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, readFile("index.html"))
 }
 
 func handleLogin(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		fmt.Fprintf(w, readFile("login.html"))
-		fmt.Println("No post request")
 	} else {
 		username := r.FormValue("username")
 		password := r.FormValue("password")
-		fmt.Printf("username: %s, password: %s\n", username, password)
+		err := Login(username, password)
+		if err == nil {
+			//TODO show successful login page and redirect to home or something
+		} //TODO else show unsuccessful and show login again
 		fmt.Fprintf(w, readFile("login.html"))
-		fmt.Println("Post request")
 	}
 }
 
 func handleRegister(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, readFile("register.html"))
+	if r.Method != "POST" {
+		fmt.Fprintf(w, readFile("register.html"))
+	} else {
+		username := r.FormValue("username")
+		password := r.FormValue("password")
+		NewUser(username, password)
+		handleIndex(w, r)
+	}
 }
 
 func readFile(fileName string) string {
