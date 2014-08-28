@@ -37,6 +37,7 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 		password := r.FormValue("password")
 		err := Login(username, password)
 		if err == nil {
+			fmt.Println("logged in successfully")
 			//TODO show successful login page and redirect to home or something
 		} //TODO else show unsuccessful and show login again
 		fmt.Fprintf(w, readFile("login.html"))
