@@ -56,6 +56,7 @@ func readFile(fileName string) string {
 	lines := make([]string, 1024)
 	for scanner.Scan() {
 		lines = append(lines, scanner.Text())
+		lines = append(lines, "\n")
 	}
 	return strings.Join(lines, "")
 }
