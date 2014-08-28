@@ -1,8 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
+		<script src="https://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/sha3.js"></script>
 	</head>
 	<body>
-	<p>Register page yo!</p>
+		<script type="text/javascript">
+			function submitform() {
+				document.forms["registerform"].pwd.value = CryptoJS.SHA3(document.forms["registerform"].pwd.value);
+				document.forms["registerform"].submit();
+			}
+		</script>
+		<form id="registerform" method="post" action="/register">
+			Username: <input id="usr" type="text" name="username" placeholder="Jane Doe"><br>
+			Password: <input id="pwd" type="password" name="password" placeholder="1234"><br>
+			<input id="login" type="button" value="Login" onclick="javascript: submitform();"/>
+		</form>
 	</body>
 </html>
