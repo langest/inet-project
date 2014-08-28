@@ -2,16 +2,16 @@ package main
 
 import (
 	"crypto/rand"
+	"errors"
 	"fmt"
 	"io"
 	"log"
-	"errors"
 
 	"code.google.com/p/go.crypto/scrypt"
 )
 
 var (
-	currentUser = ""
+	currentUser     = ""
 	currentPassword = hashPassword("")
 )
 

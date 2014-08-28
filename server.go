@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"github.com/gorilla/sessions"
 	"log"
 	"net/http"
 	"os"
@@ -12,11 +13,13 @@ import (
 var (
 	response string
 	filePath = "test/"
+	store    = sessions.NewCookieStore([]byte("something-very-secret"))
 )
 
 func main() {
 	response = readFile("testPage.html")
 	http.HandleFunc("/", handler) //Redirect all urls to handler function
+	http.HandleFunc("/login", handleLogin)
 	err := http.ListenAndServeTLS("localhost:8080", filePath+"cert.pem", filePath+"key.pem", nil)
 	if err != nil {
 		log.Fatal(err)
@@ -25,6 +28,10 @@ func main() {
 
 func handler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, response)
+}
+
+func handleLogin(w http.ResponseWriter, r *http.Request) {
+	//TODO
 }
 
 func readFile(fileName string) string {
