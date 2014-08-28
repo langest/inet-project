@@ -18,6 +18,7 @@ var (
 func main() {
 	http.HandleFunc("/", handler) //Redirect all urls to handler function
 	http.HandleFunc("/login", handleLogin)
+	http.HandleFunc("/register", handleRegister)
 	err := http.ListenAndServeTLS("localhost:8080", filePath+"cert.pem", filePath+"key.pem", nil)
 	if err != nil {
 		log.Fatal(err)
@@ -39,6 +40,10 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, readFile("login.html"))
 		fmt.Println("Post request")
 	}
+}
+
+func handleRegister(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, readFile("register.html"))
 }
 
 func readFile(fileName string) string {
