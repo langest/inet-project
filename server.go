@@ -3,11 +3,12 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"github.com/gorilla/sessions"
 	"log"
 	"net/http"
 	"os"
 	"strings"
+
+	"github.com/gorilla/sessions"
 )
 
 var (
