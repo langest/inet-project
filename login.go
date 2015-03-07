@@ -1,17 +1,12 @@
 package main
 
 import (
-	"crypto/rand"
 	"errors"
-	"io"
-	"log"
-
-	"code.google.com/p/go.crypto/scrypt"
 )
 
 var (
 	currentUser     = ""
-	currentPassword = hashPassword("")
+	currentPassword = ""
 )
 
 func NewUser(newUsername, newPassword string) {
