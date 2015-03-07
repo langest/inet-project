@@ -96,6 +96,10 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleNotes(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "POST" {
+		t := r.FormValue("type")
+	}
+
 	session, err := sessionStore.Get(r, "login")
 	if err != nil {
 		http.Redirect(w, r, "../login", http.StatusFound)
