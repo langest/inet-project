@@ -1,13 +1,15 @@
 DROP TABLE IF EXISTS users;
 
 CREATE TABLE users (
-	username char(20),
-	password char(50)
+	username char(20) NOT NULL,
+	password char(50) NOT NULL,
+	PRIMARY KEY (username)
 );
 
 DROP TABLE IF EXISTS notes;
 
 CREATE TABLE notes (
-	username char(20),
-	note char(500)
+	username char(20) NOT NULL,
+	note char(500) NOT NULL,
+	PRIMARY KEY (username)
 );
