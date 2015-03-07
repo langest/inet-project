@@ -101,20 +101,21 @@ func handleLogOut(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		//TODO
 		log.Println(err)
+		return
 	}
 	_, ok := session.Values["username"]
 	if !ok {
 		http.Redirect(w, r, "../login", http.StatusFound)
 		return
 	}
-	session.Options.MaxAge = 0
+	session.Options.MaxAge = -1
 	session.Save(r, w)
 	fmt.Fprintf(w, buildWebpage("", readFile("logout.html")))
 }
 
 func handleNotes(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" {
-		t := r.FormValue("type")
+		//	t := r.FormValue("type")
 	}
 
 	session, err := sessionStore.Get(r, "login")
