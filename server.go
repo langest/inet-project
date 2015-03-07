@@ -82,7 +82,7 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 		password := r.FormValue("password")
 		ok, err := checkPassword(db, username, password)
 		if err != nil {
-			log.Fatal(err)
+			log.Println(err)
 		} else if ok {
 			log.Println("logged in successfully")
 			session.Values["username"] = username
@@ -113,7 +113,7 @@ func handleRegister(w http.ResponseWriter, r *http.Request) {
 	} else {
 		err := addUser(db, r.FormValue("username"), r.FormValue("password"))
 		if err != nil {
-			log.Fatal(err)
+			log.Println(err)
 		}
 		handleIndex(w, r)
 	}
