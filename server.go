@@ -94,8 +94,13 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func handleNotes() {
-
+func handleNotes(w http.ResponseWriter, r *http.Request) {
+	session, err := sessionStore.Get(r, "login")
+	_, ok := session.Values["username"]
+	if !ok {
+		http.Redirect(r, w, "../login", http.StatusFound)
+	}
+	fmt.Fprintf(w, readFile("notes.html"))
 }
 
 func handleRegister(w http.ResponseWriter, r *http.Request) {
