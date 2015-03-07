@@ -4,12 +4,12 @@ import (
 	"bufio"
 	"database/sql"
 	"fmt"
+	"github.com/gorilla/context"
+	"github.com/gorilla/sessions"
 	"log"
 	"net/http"
 	"os"
 	"strings"
-	"github.com/gorilla/context"
-	"github.com/gorilla/sessions"
 )
 
 const (
@@ -54,7 +54,7 @@ func handleLoggedInPage(w http.ResponseWriter, r *http.Request) {
 	}
 	username, ok := session.Values["username"]
 	if !ok {
-	    http.Redirect(w, r, "../login", http.StatusFound)
+		http.Redirect(w, r, "../login", http.StatusFound)
 		return
 	}
 	fmt.Fprintf(w, readFile("loggedinpage.html"), username)
@@ -62,13 +62,13 @@ func handleLoggedInPage(w http.ResponseWriter, r *http.Request) {
 
 func handleLogin(w http.ResponseWriter, r *http.Request) {
 	session, err := sessionStore.Get(r, "login")
-	if err != nil {
-		//TODO
+	ok := false
+	if err == nil {
+		_, ok = session.Values["username"]
 	}
-	_, ok := session.Values["username"]
 	if ok {
 		log.Println("Already logged in as the user", session.Values["username"])
-	    http.Redirect(w, r, "../loggedinpage", http.StatusFound)
+		http.Redirect(w, r, "../loggedinpage", http.StatusFound)
 		return
 	}
 
@@ -87,7 +87,7 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 			log.Println("logged in successfully")
 			session.Values["username"] = username
 			//TODO show successful login page and redirect to home or something
-			
+
 			session.Save(r, w)
 
 		} //TODO else show unsuccessful and show login again
@@ -97,9 +97,12 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 
 func handleNotes(w http.ResponseWriter, r *http.Request) {
 	session, err := sessionStore.Get(r, "login")
-	_, ok := session.Values["username"]
+	ok := false
+	if err == nil {
+		_, ok = session.Values["username"]
+	}
 	if !ok {
-		http.Redirect(r, w, "../login", http.StatusFound)
+		http.Redirect(w, r, "../login", http.StatusFound)
 	}
 	fmt.Fprintf(w, readFile("notes.html"))
 }
