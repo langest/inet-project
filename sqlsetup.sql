@@ -2,7 +2,7 @@ DROP TABLE IF EXISTS users;
 
 CREATE TABLE users (
 	username char(20) NOT NULL,
-	password char(50) NOT NULL,
+	password char(255) NOT NULL,
 	PRIMARY KEY (username)
 );
 
