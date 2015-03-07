@@ -127,43 +127,46 @@ func handleNotes(w http.ResponseWriter, r *http.Request) {
 		t = r.FormValue("type")
 	}
 
-	u := fmt.Sprintf("%v", username)
+	if username == nil {
+		http.Redirect(w, r, "../login", http.StatusFound)
+	} else {
+		u := fmt.Sprintf("%v", username)
+		switch t {
+		case "add":
+			if r.FormValue("title") == "" || r.FormValue("note") == "" {
+				log.Println("Tried to add note without title or note")
+				break
+			}
+			err := addNote(db, u, r.FormValue("title"), r.FormValue("note"))
+			if err != nil {
+				log.Println("Failed to add note:", err)
+			}
 
-	switch t {
-	case "add":
-		if r.FormValue("title") == "" || r.FormValue("note") == "" {
-			log.Println("Tried to add note without title or note")
-			break
+		case "remove":
+			err := removeNote(db, u, r.FormValue("title"))
+			if err != nil {
+				log.Println("Failed to remove note:", err)
+			}
+
 		}
-		err := addNote(db, u, r.FormValue("title"), r.FormValue("note"))
+
+		notes, err := getNotes(db, u)
 		if err != nil {
-			log.Println("Failed to add note:", err)
+			log.Print(err)
 		}
 
-	case "remove":
-		err := removeNote(db, u, r.FormValue("title"))
-		if err != nil {
-			log.Println("Failed to remove note:", err)
+		noteshtml := make([]string, 0)
+		for _, ni := range notes {
+			noteshtml = append(noteshtml, ni.title)
+			noteshtml = append(noteshtml, "")
+			noteshtml = append(noteshtml, ni.note)
+			noteshtml = append(noteshtml, "---")
 		}
+		noteContent := strings.Join(noteshtml, "<br>")
 
+		body := fmt.Sprintf("%s\n%s\n%s\n", readFile("notes1.html"), noteContent, readFile("notes2.html"))
+		fmt.Fprintf(w, buildWebpage("", body))
 	}
-
-	notes, err := getNotes(db, u)
-	if err != nil {
-		log.Print(err)
-	}
-
-	noteshtml := make([]string, 0)
-	for _, ni := range notes {
-		noteshtml = append(noteshtml, ni.title)
-		noteshtml = append(noteshtml, "")
-		noteshtml = append(noteshtml, ni.note)
-		noteshtml = append(noteshtml, "---")
-	}
-	noteContent := strings.Join(noteshtml, "<br>")
-
-	body := fmt.Sprintf("%s\n%s\n%s\n", readFile("notes1.html"), noteContent, readFile("notes2.html"))
-	fmt.Fprintf(w, buildWebpage("", body))
 }
 
 func handleRegister(w http.ResponseWriter, r *http.Request) {
