@@ -1,8 +1,4 @@
 
-	<head>
-		<script src="https://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/sha3.js"></script>
-	</head>
-	<body>
 		<script type="text/javascript">
 			function submitform() {
 				document.forms["loginform"].pwd.value = CryptoJS.SHA3(document.forms["loginform"].pwd.value);
@@ -14,4 +10,4 @@
 			Password: <input id="pwd" type="password" name="password" placeholder="1234"><br>
 			<input id="login" type="button" value="Login" onclick="javascript: submitform();"/>
 		</form>
-	</body>
+		
