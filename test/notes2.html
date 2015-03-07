@@ -7,13 +7,13 @@
 			}
 		</script>
 		<form id="addnote" method="post" action="/notes">
-			<input id="type" type="hidden" name="add">
+			<input id="type" type="hidden" name="type" value="add">
 			Title: <input id="tit" type="text" name="title" placeholder="My Note"><br>
 			Note: <input id="not" type="text" name="note" placeholder="What I need to remember"><br>
 			<input id="add" type="button" value="Add note" onclick="javascript: submitAdd();"/>
 		</form>
 		<form id="removenote" method="post" action="/notes">
-			<input id="type" type="hidden" name="remove">
+			<input id="type" type="hidden" name="type" value="remove">
 			Title: <input id="tit" type="text" name="title" placeholder="My Note"><br>
-			<input id="remove" type="button" value="Remove note" onclick="javascript: submitAdd();"/>
+			<input id="remove" type="button" value="Remove note" onclick="javascript: submitRemove();"/>
 		</form>
