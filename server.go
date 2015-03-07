@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"database/sql"
 	"fmt"
 	"log"
 	"net/http"
@@ -18,15 +19,24 @@ const (
 var (
 	filePath     = "test/"
 	sessionStore = sessions.NewCookieStore([]byte("something-very-secret"))
+	db           *sql.DB
 )
 
 func main() {
+	var err error
+	db, err = connectToDB()
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+	defer closeDB()
+
 	log.Println("starting server...")
 	http.HandleFunc("/", handleIndex) //Redirect all urls to handler function
 	http.HandleFunc("/login", handleLogin)
 	http.HandleFunc("/register", handleRegister)
 	http.HandleFunc("/loggedinpage", handleLoggedInPage)
-	err := http.ListenAndServeTLS("localhost:"+LISTENPORT, filePath+"cert.pem", filePath+"key.pem", context.ClearHandler(http.DefaultServeMux))
+	err = http.ListenAndServeTLS("localhost:"+LISTENPORT, filePath+"cert.pem", filePath+"key.pem", context.ClearHandler(http.DefaultServeMux))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -69,8 +79,10 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 	} else { //else try to login
 		username := r.FormValue("username")
 		password := r.FormValue("password")
-		err := Login(username, password)
-		if err == nil {
+		ok, err := checkPassword(db, username, password)
+		if err != nil {
+			log.Fatal(err)
+		} else if ok {
 			log.Println("logged in successfully")
 			session.Values["username"] = username
 			//TODO show successful login page and redirect to home or something
@@ -80,6 +92,9 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 		} //TODO else show unsuccessful and show login again
 		fmt.Fprintf(w, readFile("login.html"))
 	}
+}
+
+func handleNotes() {
 
 }
 
@@ -87,9 +102,10 @@ func handleRegister(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		fmt.Fprintf(w, readFile("register.html"))
 	} else {
-		username := r.FormValue("username")
-		password := r.FormValue("password")
-		NewUser(username, password)
+		err := addUser(db, r.FormValue("username"), r.FormValue("password"))
+		if err != nil {
+			log.Fatal(err)
+		}
 		handleIndex(w, r)
 	}
 }
