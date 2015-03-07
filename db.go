@@ -7,6 +7,7 @@ import (
 	"errors"
 	"log"
 	"regexp"
+	"time"
 )
 
 const (
@@ -18,6 +19,11 @@ const (
 var (
 	database *sql.DB
 )
+
+type noteInfo struct {
+	title string
+	note  string
+}
 
 func connectToDB() (*sql.DB, error) {
 	database, err := sql.Open("mysql", DATABASE_USER+":"+DATABASE_PASS+"@/"+DATABASE_NAME)
@@ -74,8 +80,8 @@ func checkPassword(db *sql.DB, username, password string) (ok bool, err error) {
 	return
 }
 
-func getNotes(db *sql.DB, username string) (notes map[string]string, err error) {
-	prepStmt, err := db.Prepare("SELECT title, note FROM notes WHERE username = ?")
+func getNotes(db *sql.DB, username string) (notes []noteInfo, err error) {
+	prepStmt, err := db.Prepare("SELECT title, note FROM notes WHERE username = ? ORDER BY timestamp")
 	if err != nil {
 		return
 	}
@@ -85,30 +91,29 @@ func getNotes(db *sql.DB, username string) (notes map[string]string, err error) 
 		return
 	}
 
-	notes = make(map[string]string)
-	var title string
-	var note string
+	notes = make([]noteInfo, 0)
 	for rows.Next() {
-		rows.Scan(&title, &note)
-		notes[title] = note
+		var ni noteInfo
+		rows.Scan(&ni.title, &ni.note)
+		notes = append(notes, ni)
 	}
 	return
 }
 
-func addNote(db *sql.DB, username, note string) (err error) {
-	prepStmt, err := db.Prepare("INSERT INTO notes (username, note) VALUES (?, ?) ON DUPLICATE KEY UPDATE username = ?")
+func addNote(db *sql.DB, username, title, note string) (err error) {
+	prepStmt, err := db.Prepare("INSERT INTO notes (username, title, note, timestamp) VALUES (?, ?, ?, ?)")
 	if err != nil {
 		return
 	}
-	_, err = prepStmt.Exec(username, note, username)
+	_, err = prepStmt.Exec(username, title, note, time.Now())
 	return
 }
 
-func removeNote(db *sql.DB, username, note string) (err error) {
-	prepStmt, err := db.Prepare("DELETE notes WHERE username = ? AND note = ?")
+func removeNote(db *sql.DB, username, title string) (err error) {
+	prepStmt, err := db.Prepare("DELETE FROM notes WHERE username = ? AND title = ?")
 	if err != nil {
 		return
 	}
-	_, err = prepStmt.Exec(username, note)
+	_, err = prepStmt.Exec(username, title)
 	return
 }
