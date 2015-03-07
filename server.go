@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	
 )
 
 const (
@@ -44,7 +45,7 @@ func main() {
 }
 
 func handleIndex(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, readFile("index.html"))
+	fmt.Fprintf(w, buildWebpage("index.html"))
 }
 
 func handleLoggedInPage(w http.ResponseWriter, r *http.Request) {
@@ -57,7 +58,7 @@ func handleLoggedInPage(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "../login", http.StatusFound)
 		return
 	}
-	fmt.Fprintf(w, readFile("loggedinpage.html"), username)
+	fmt.Fprintf(w, buildWebpage("loggedinpage.html"), username)
 }
 
 func handleLogin(w http.ResponseWriter, r *http.Request) {
@@ -75,7 +76,7 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 	//if it was not a post request
 	//print the login page
 	if r.Method != "POST" {
-		fmt.Fprintf(w, readFile("login.html"))
+		fmt.Fprintf(w, buildWebpage("login.html"))
 
 	} else { //else try to login
 		username := r.FormValue("username")
@@ -91,7 +92,7 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 			session.Save(r, w)
 
 		} //TODO else show unsuccessful and show login again
-		fmt.Fprintf(w, readFile("login.html"))
+		fmt.Fprintf(w, buildWebpage("login.html"))
 	}
 }
 
@@ -104,12 +105,12 @@ func handleNotes(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		http.Redirect(w, r, "../login", http.StatusFound)
 	}
-	fmt.Fprintf(w, readFile("notes.html"))
+	fmt.Fprintf(w, buildWebpage("notes.html"))
 }
 
 func handleRegister(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
-		fmt.Fprintf(w, readFile("register.html"))
+		fmt.Fprintf(w, buildWebpage("register.html"))
 	} else {
 		err := addUser(db, r.FormValue("username"), r.FormValue("password"))
 		if err != nil {
@@ -138,3 +139,8 @@ func readFile(fileName string) string {
 	}
 	return strings.Join(lines, "")
 }
+
+func buildWebpage(fileNameString string) string {
+    return readFile("header.html") + readFile(fileNameString) + readFile("foter.html") 
+}
+
