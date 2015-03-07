@@ -20,7 +20,7 @@ func main() {
 	http.HandleFunc("/", handleIndex) //Redirect all urls to handler function
 	http.HandleFunc("/login", handleLogin)
 	http.HandleFunc("/register", handleRegister)
-	err := http.ListenAndServeTLS("localhost:8080", filePath+"cert.pem", filePath+"key.pem", nil)
+	err := http.ListenAndServeTLS("localhost:8080", filePath+"cert.pem", filePath+"key.pem", context.ClearHandler(http.DefaultServeMux))
 	if err != nil {
 		log.Fatal(err)
 	}
