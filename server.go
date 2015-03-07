@@ -19,9 +19,17 @@ const (
 var (
 	filePath     = "test/"
 	sessionStore = sessions.NewCookieStore([]byte("something-very-secret"))
+	db           *sql.DB
 )
 
 func main() {
+	db, err = connectToDB()
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+	defer closeDB()
+
 	log.Println("starting server...")
 	http.HandleFunc("/", handleIndex) //Redirect all urls to handler function
 	http.HandleFunc("/login", handleLogin)
@@ -87,9 +95,10 @@ func handleRegister(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		fmt.Fprintf(w, readFile("register.html"))
 	} else {
-		username := r.FormValue("username")
-		password := r.FormValue("password")
-		NewUser(username, password)
+		err := addUser(db, r.FormValue("username"), r.FormValue("password"))
+		if err != nil {
+			log.Fatal(err)
+		}
 		handleIndex(w, r)
 	}
 }
