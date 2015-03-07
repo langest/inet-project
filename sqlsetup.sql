@@ -10,6 +10,6 @@ DROP TABLE IF EXISTS notes;
 
 CREATE TABLE notes (
 	username char(20) NOT NULL,
-	note char(500) NOT NULL,
+	note TEXT NOT NULL,
 	PRIMARY KEY (username)
 );
