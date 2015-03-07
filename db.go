@@ -33,12 +33,21 @@ func closeDB() {
 }
 
 func addUser(db *sql.DB, username, password string) (err error) {
-	ok, err := regexp.MatchString("[a-zA-Z0-9_]", username)
-	if err != nil {
+	r := regexp.MustCompile(`[^a-zA-Z]+`)
+	notOk := r.MatchString(username)
+	if notOk {
+		err = errors.New("username contains illegal characters")
 		return
 	}
-	if !ok {
-		err = errors.New("username contains illegal characters")
+	notOk = len(username) < 3
+	if notOk {
+		err = errors.New("username too short")
+		return
+	}
+	notOk = len(password) < 10
+	if notOk {
+		err = errors.New("password too short")
+		return
 	}
 	//TODO chack that username isnt used already
 	prepStmt, err := db.Prepare("INSERT INTO users (username, password) VALUES (?, ?)")

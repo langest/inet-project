@@ -6,6 +6,19 @@
 	<body>
 		<script type="text/javascript">
 			function submitform() {
+				var r = new RegExp("[a-zA-Z0-9]");
+				if (r.test(document.forms["registerform"].usr.value) == false) {
+					alert('Your username contains illegal characters. Only a-z, A-Z and 0-9 are allowed. Please try again.');
+					return;
+				}
+				if (document.forms["registerform"].usr.value.length < 5) {
+					alert('Your username must be at least 5 characters long. Please try again.');
+					return;
+				}
+				if (document.forms["registerform"].pwd.value.length < 5) {
+					alert('Your password must be at least 5 characters long. Please try again.');
+					return;
+				}
 				document.forms["registerform"].pwd.value = CryptoJS.SHA3(document.forms["registerform"].pwd.value);
 				document.forms["registerform"].submit();
 			}
