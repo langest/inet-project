@@ -37,6 +37,7 @@ func main() {
 	http.HandleFunc("/register", handleRegister)
 	http.HandleFunc("/loggedinpage", handleLoggedInPage)
 	http.HandleFunc("/notes", handleNotes)
+	http.HandleFunc("/logout", handleLogOut)
 	err = http.ListenAndServeTLS("localhost:"+LISTENPORT, filePath+"cert.pem", filePath+"key.pem", context.ClearHandler(http.DefaultServeMux))
 	if err != nil {
 		log.Fatal(err)
@@ -86,13 +87,23 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 		} else if ok {
 			log.Println("logged in successfully")
 			session.Values["username"] = username
-			session.Options.MaxAge = 10	
-			//TODO show successful login page and redirect to home or something 
+			session.Options.MaxAge = 10
+			//TODO show successful login page and redirect to home or something
 			session.Save(r, w)
 
 		} //TODO else show unsuccessful and show login again
 		fmt.Fprintf(w, buildWebpage(readFile("Crypto.html"), readFile("login.html")))
 	}
+}
+
+func handleLogOut(w http.ResponseWriter, r *http.Request) {
+	session, err := sessionStore.Get(r, "login")
+	if err != nil {
+		http.Redirect(w, r, "../login", http.StatusFound)
+	}
+	session.Options.MaxAge = 0
+	session.Save(r, w)
+	fmt.Fprintf(w, buildWebpage("", readFile("logout.html")))
 }
 
 func handleNotes(w http.ResponseWriter, r *http.Request) {
