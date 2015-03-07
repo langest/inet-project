@@ -1,0 +1,17 @@
+		<script type="text/javascript">
+			function submitAdd() {
+				document.forms["addnote"].submit();
+			}
+			function submitRemove() {
+				document.forms["removenote"].submit();
+			}
+		</script>
+		<form id="addnote" method="post" action="/notes">
+			Title: <input id="tit" type="text" name="title" placeholder="My Note"><br>
+			Note: <input id="not" type="textbox" name="note" placeholder="What I need to remember"><br>
+			<input id="login" type="button" value="Add note" onclick="javascript: submitAdd();"/>
+		</form>
+		<form id="removenote" method="post" action="/notes">
+			Title: <input id="tit" type="text" name="title" placeholder="My Note"><br>
+			<input id="login" type="button" value="Remove note" onclick="javascript: submitAdd();"/>
+		</form>
