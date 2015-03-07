@@ -12,7 +12,7 @@ import (
 const (
 	DATABASE_USER = "root"
 	DATABASE_PASS = "raspberrypass"
-	DATABASE_NAME = "intnet"
+	DATABASE_NAME = "inet"
 )
 
 var (
@@ -74,8 +74,8 @@ func checkPassword(db *sql.DB, username, password string) (ok bool, err error) {
 	return
 }
 
-func getNotes(db *sql.DB, username string) (notes []string, err error) {
-	prepStmt, err := db.Prepare("SELECT note FROM notes WHERE username = ?")
+func getNotes(db *sql.DB, username string) (notes map[string]string, err error) {
+	prepStmt, err := db.Prepare("SELECT title, note FROM notes WHERE username = ?")
 	if err != nil {
 		return
 	}
@@ -85,10 +85,12 @@ func getNotes(db *sql.DB, username string) (notes []string, err error) {
 		return
 	}
 
+	notes = make(map[string]string)
+	var title string
 	var note string
 	for rows.Next() {
-		rows.Scan(&note)
-		notes = append(notes, note)
+		rows.Scan(&title, &note)
+		notes[title] = note
 	}
 	return
 }

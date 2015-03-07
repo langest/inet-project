@@ -75,7 +75,7 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 	//if it was not a post request
 	//print the login page
 	if r.Method != "POST" {
-		fmt.Fprintf(w, buildWebpage(readFile("login_head.html"), readFile("login.html")))
+		fmt.Fprintf(w, buildWebpage(readFile("Crypto.html"), readFile("login.html")))
 
 	} else { //else try to login
 		username := r.FormValue("username")
@@ -91,7 +91,7 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 			session.Save(r, w)
 
 		} //TODO else show unsuccessful and show login again
-		fmt.Fprintf(w, buildWebpage(readFile("login_head.html"), readFile("login.html")))
+		fmt.Fprintf(w, buildWebpage(readFile("Crypto.html"), readFile("login.html")))
 	}
 }
 
@@ -112,11 +112,13 @@ func handleNotes(w http.ResponseWriter, r *http.Request) {
 	}
 
 	noteshtml := make([]string, 0)
-	for _, note := range notes {
+	for title, note := range notes {
+		noteshtml = append(noteshtml, title)
+		noteshtml = append(noteshtml, "")
 		noteshtml = append(noteshtml, note)
 		noteshtml = append(noteshtml, "---")
 	}
-	noteContent := strings.Join(noteshtml, "\n")
+	noteContent := strings.Join(noteshtml, "<br>")
 
 	body := fmt.Sprintf("%s\n%s\n%s\n", readFile("notes1.html"), noteContent, readFile("notes2.html"))
 	fmt.Fprintf(w, buildWebpage("", body))
