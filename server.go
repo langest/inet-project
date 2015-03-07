@@ -113,10 +113,6 @@ func handleLogOut(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleNotes(w http.ResponseWriter, r *http.Request) {
-	if r.Method == "POST" {
-		t := r.FormValue("type")
-	}
-
 	session, err := sessionStore.Get(r, "login")
 	if err != nil {
 		http.Redirect(w, r, "../login", http.StatusFound)
@@ -125,8 +121,32 @@ func handleNotes(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		http.Redirect(w, r, "../login", http.StatusFound)
 	}
+	var t string
+	if r.Method == "POST" {
+		t = r.FormValue("type")
+	}
 
 	u := fmt.Sprintf("%v", username)
+
+	switch t {
+	case "add":
+		if r.FormValue("title") == "" || r.FormValue("note") == "" {
+			log.Println("Tried to add note without title or note")
+			break
+		}
+		err := addNote(db, u, r.FormValue("title"), r.FormValue("note"))
+		if err != nil {
+			log.Println("Failed to add note:", err)
+		}
+
+	case "remove":
+		err := removeNote(db, u, r.FormValue("title"))
+		if err != nil {
+			log.Println("Failed to remove note:", err)
+		}
+
+	}
+
 	notes, err := getNotes(db, u)
 	if err != nil {
 		log.Print(err)
