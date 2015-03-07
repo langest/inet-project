@@ -5,6 +5,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 
 	"errors"
+	"log"
 	"regexp"
 )
 
@@ -44,7 +45,9 @@ func addUser(db *sql.DB, username, password string) (err error) {
 	if err != nil {
 		return
 	}
-	prepStmt.Exec(username, password)
+	_, err = prepStmt.Exec(username, password)
+
+	return
 }
 
 func checkPassword(db *sql.DB, username, password string) (ok bool, err error) {
@@ -58,7 +61,7 @@ func checkPassword(db *sql.DB, username, password string) (ok bool, err error) {
 	}
 	//Check that we find exactly 1 user
 	rows.Next()
-	ok := rows.Next()
+	ok = rows.Next()
 	return
 }
 
@@ -67,7 +70,7 @@ func addNote(db *sql.DB, username, note string) (err error) {
 	if err != nil {
 		return
 	}
-	_, err := prepStmt.Exec(username, note, username)
+	_, err = prepStmt.Exec(username, note, username)
 	return
 }
 
@@ -76,6 +79,6 @@ func removeNote(db *sql.DB, username, note string) (err error) {
 	if err != nil {
 		return
 	}
-	_, err := prepStmt.Exec(username, note)
+	_, err = prepStmt.Exec(username, note)
 	return
 }
