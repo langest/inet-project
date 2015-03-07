@@ -45,7 +45,7 @@ func main() {
 }
 
 func handleIndex(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, buildWebpage("index.html"))
+	fmt.Fprintf(w, buildWebpage("", readFile("index.html")))
 }
 
 func handleLoggedInPage(w http.ResponseWriter, r *http.Request) {
@@ -58,7 +58,7 @@ func handleLoggedInPage(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "../login", http.StatusFound)
 		return
 	}
-	fmt.Fprintf(w, buildWebpage("loggedinpage.html"), username)
+	fmt.Fprintf(w, buildWebpage("", readFile("loggedinpage.html")), username)
 }
 
 func handleLogin(w http.ResponseWriter, r *http.Request) {
@@ -76,14 +76,14 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 	//if it was not a post request
 	//print the login page
 	if r.Method != "POST" {
-		fmt.Fprintf(w, buildWebpage("login.html"))
+		fmt.Fprintf(w, buildWebpage(readFile("login_head.html"), readFile("login.html")))
 
 	} else { //else try to login
 		username := r.FormValue("username")
 		password := r.FormValue("password")
 		ok, err := checkPassword(db, username, password)
 		if err != nil {
-			log.Println(err)
+			log.Fatal(err)
 		} else if ok {
 			log.Println("logged in successfully")
 			session.Values["username"] = username
@@ -92,7 +92,7 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 			session.Save(r, w)
 
 		} //TODO else show unsuccessful and show login again
-		fmt.Fprintf(w, buildWebpage("login.html"))
+		fmt.Fprintf(w, buildWebpage(readFile("login_head.html"),readFile("login.html")))
 	}
 }
 
@@ -105,16 +105,16 @@ func handleNotes(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		http.Redirect(w, r, "../login", http.StatusFound)
 	}
-	fmt.Fprintf(w, buildWebpage("notes.html"))
+	fmt.Fprintf(w, buildWebpage("", readFile("notes.html")))
 }
 
 func handleRegister(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
-		fmt.Fprintf(w, buildWebpage("register.html"))
+		fmt.Fprintf(w, buildWebpage(readFile("Crypto.html"), readFile("register.html")))
 	} else {
 		err := addUser(db, r.FormValue("username"), r.FormValue("password"))
 		if err != nil {
-			log.Println(err)
+			log.Fatal(err)
 		}
 		handleIndex(w, r)
 	}
@@ -140,7 +140,7 @@ func readFile(fileName string) string {
 	return strings.Join(lines, "")
 }
 
-func buildWebpage(fileNameString string) string {
-    return readFile("header.html") + readFile(fileNameString) + readFile("foter.html") 
+func buildWebpage(header string, body string ) string {
+    return readFile("start.html") + header + readFile("middle.html") + body + readFile("end.html");
 }
 
