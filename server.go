@@ -12,8 +12,8 @@ import (
 )
 
 var (
-	filePath = "test/"
-	store    = sessions.NewCookieStore([]byte("something-very-secret"))
+	filePath     = "test/"
+	sessionStore = sessions.NewCookieStore([]byte("something-very-secret"))
 )
 
 func main() {
