@@ -97,14 +97,28 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 
 func handleNotes(w http.ResponseWriter, r *http.Request) {
 	session, err := sessionStore.Get(r, "login")
-	ok := false
-	if err == nil {
-		_, ok = session.Values["username"]
+	if err != nil {
+		http.Redirect(w, r, "../login", http.StatusFound)
 	}
+	username, ok := session.Values["username"]
 	if !ok {
 		http.Redirect(w, r, "../login", http.StatusFound)
 	}
-	fmt.Fprintf(w, readFile("notes.html"))
+	u := fmt.Sprintf("%v", username)
+
+	notes, err := getNotes(db, u)
+	if err != nil {
+		log.Print(err)
+	}
+
+	noteshtml := make([]string, 0)
+	for _, note := range notes {
+		noteshtml = append(noteshtml, note)
+		noteshtml = append(noteshtml, "---")
+	}
+	noteContent := strings.Join(noteshtml, "\n")
+
+	fmt.Fprintf(w, readFile("notes1.html")+noteContent+readFile("notes2.html"))
 }
 
 func handleRegister(w http.ResponseWriter, r *http.Request) {
