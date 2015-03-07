@@ -60,8 +60,8 @@ func checkPassword(db *sql.DB, username, password string) (ok bool, err error) {
 		return
 	}
 	//Check that we find exactly 1 user
-	rows.Next()
 	ok = rows.Next()
+	ok = ok && !rows.Next()
 	return
 }
 
