@@ -11,7 +11,7 @@ import (
 
 const (
 	DATABASE_USER = "root"
-	DATABASE_PASS = "pass"
+	DATABASE_PASS = "raspberrypass"
 	DATABASE_NAME = "intnet"
 )
 
@@ -74,7 +74,7 @@ func checkPassword(db *sql.DB, username, password string) (ok bool, err error) {
 	return
 }
 
-func getNotes(db *sql.DB, username string) (notes []String, err error) {
+func getNotes(db *sql.DB, username string) (notes []string, err error) {
 	prepStmt, err := db.Prepare("SELECT note FROM notes WHERE username = ?")
 	if err != nil {
 		return
@@ -85,11 +85,10 @@ func getNotes(db *sql.DB, username string) (notes []String, err error) {
 		return
 	}
 
-	notes = make([]string, 0)
 	var note string
 	for rows.Next() {
 		rows.Scan(&note)
-		notes = append([]notes, note)
+		notes = append(notes, note)
 	}
 	return
 }
