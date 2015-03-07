@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"os"
 	"strings"
-
 	"github.com/gorilla/context"
 	"github.com/gorilla/sessions"
 )
@@ -55,7 +54,7 @@ func handleLoggedInPage(w http.ResponseWriter, r *http.Request) {
 	}
 	username, ok := session.Values["username"]
 	if !ok {
-		fmt.Fprintf(w, readFile("login.html"))
+	    http.Redirect(w, r, "../login", http.StatusFound)
 		return
 	}
 	fmt.Fprintf(w, readFile("loggedinpage.html"), username)
@@ -69,7 +68,7 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 	_, ok := session.Values["username"]
 	if ok {
 		log.Println("Already logged in as the user", session.Values["username"])
-		fmt.Fprintf(w, readFile("login.html"))
+	    http.Redirect(w, r, "../loggedinpage", http.StatusFound)
 		return
 	}
 
@@ -88,6 +87,7 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 			log.Println("logged in successfully")
 			session.Values["username"] = username
 			//TODO show successful login page and redirect to home or something
+			
 			session.Save(r, w)
 
 		} //TODO else show unsuccessful and show login again
