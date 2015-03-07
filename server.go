@@ -26,6 +26,7 @@ func main() {
 	http.HandleFunc("/", handleIndex) //Redirect all urls to handler function
 	http.HandleFunc("/login", handleLogin)
 	http.HandleFunc("/register", handleRegister)
+    http.HandleFunc("/loggedinpage", handleLoggedInPage)
 	err := http.ListenAndServeTLS("localhost:"+LISTENPORT, filePath+"cert.pem", filePath+"key.pem", context.ClearHandler(http.DefaultServeMux))
 	if err != nil {
 		log.Fatal(err)
@@ -34,6 +35,19 @@ func main() {
 
 func handleIndex(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, readFile("index.html"))
+}
+
+func handleLoggedInPage(w http.ResponseWriter, r *http.Request) {
+	session, err := sessionStore.Get(r, "login")
+	if err != nil {
+		//TODO
+	}
+	username, ok := session.Values["username"]
+	if !ok {
+		fmt.Fprintf(w, readFile("login.html"))
+		return
+	}
+	fmt.Fprintf(w, readFile("loggedinpage.html"), username)
 }
 
 func handleLogin(w http.ResponseWriter, r *http.Request) {
@@ -62,6 +76,7 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 			session.Values["username"] = username
 			//TODO show successful login page and redirect to home or something
 			session.Save(r,w)
+				
 		} //TODO else show unsuccessful and show login again
 		fmt.Fprintf(w, readFile("login.html"))
 	}
