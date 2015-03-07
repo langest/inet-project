@@ -74,6 +74,26 @@ func checkPassword(db *sql.DB, username, password string) (ok bool, err error) {
 	return
 }
 
+func getNotes(db *sql.DB, username string) (notes []String, err error) {
+	prepStmt, err := db.Prepare("SELECT note FROM notes WHERE username = ?")
+	if err != nil {
+		return
+	}
+
+	rows, err := prepStmt.Query(username)
+	if err != nil {
+		return
+	}
+
+	notes = make([]string, 0)
+	var note string
+	for rows.Next() {
+		rows.Scan(&note)
+		notes = append([]notes, note)
+	}
+	return
+}
+
 func addNote(db *sql.DB, username, note string) (err error) {
 	prepStmt, err := db.Prepare("INSERT INTO notes (username, note) VALUES (?, ?) ON DUPLICATE KEY UPDATE username = ?")
 	if err != nil {
