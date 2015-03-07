@@ -61,7 +61,7 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 			log.Println("logged in successfully")
 			session.Values["username"] = username
 			//TODO show successful login page and redirect to home or something
-			session.Save()
+			session.Save(r,w)
 		} //TODO else show unsuccessful and show login again
 		fmt.Fprintf(w, readFile("login.html"))
 	}
