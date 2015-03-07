@@ -98,7 +98,11 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 
 func handleLogOut(w http.ResponseWriter, r *http.Request) {
 	session, err := sessionStore.Get(r, "login")
-	username, ok := session.Values["username"]
+	if err != nil {
+		//TODO
+		log.Println(err)
+	}
+	_, ok := session.Values["username"]
 	if !ok {
 		http.Redirect(w, r, "../login", http.StatusFound)
 		return
