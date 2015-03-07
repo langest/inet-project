@@ -153,10 +153,10 @@ func handleNotes(w http.ResponseWriter, r *http.Request) {
 	}
 
 	noteshtml := make([]string, 0)
-	for title, note := range notes {
-		noteshtml = append(noteshtml, title)
+	for _, ni := range notes {
+		noteshtml = append(noteshtml, ni.title)
 		noteshtml = append(noteshtml, "")
-		noteshtml = append(noteshtml, note)
+		noteshtml = append(noteshtml, ni.note)
 		noteshtml = append(noteshtml, "---")
 	}
 	noteContent := strings.Join(noteshtml, "<br>")
