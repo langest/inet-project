@@ -98,8 +98,10 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 
 func handleLogOut(w http.ResponseWriter, r *http.Request) {
 	session, err := sessionStore.Get(r, "login")
-	if err != nil {
+	username, ok := session.Values["username"]
+	if !ok {
 		http.Redirect(w, r, "../login", http.StatusFound)
+		return
 	}
 	session.Options.MaxAge = 0
 	session.Save(r, w)
