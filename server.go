@@ -37,6 +37,7 @@ func main() {
 	http.HandleFunc("/login", handleLogin)
 	http.HandleFunc("/register", handleRegister)
 	http.HandleFunc("/loggedinpage", handleLoggedInPage)
+	http.HandleFunc("/notes", handleNotes)
 	err = http.ListenAndServeTLS("localhost:"+LISTENPORT, filePath+"cert.pem", filePath+"key.pem", context.ClearHandler(http.DefaultServeMux))
 	if err != nil {
 		log.Fatal(err)
