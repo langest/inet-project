@@ -11,9 +11,9 @@ import (
 )
 
 const (
-	DATABASE_USER = "root"
-	DATABASE_PASS = "raspberrypass"
-	DATABASE_NAME = "inet"
+	DATABASE_USER = "inetproj"
+	DATABASE_PASS = "inetpass"
+	DATABASE_NAME = "inetdb"
 )
 
 var (

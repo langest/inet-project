@@ -1,12 +1,12 @@
-DROP TABLE IF EXISTS users;
+DROP DATABASE IF EXISTS inetdb;
+CREATE DATABASE inetdb;
+USE inetdb;
 
 CREATE TABLE users (
 	username char(20) NOT NULL,
 	password char(255) NOT NULL,
 	PRIMARY KEY (username)
 );
-
-DROP TABLE IF EXISTS notes;
 
 CREATE TABLE notes (
 	username char(20) NOT NULL,
@@ -15,3 +15,7 @@ CREATE TABLE notes (
 	timestamp TIMESTAMP NOT NULL,
 	UNIQUE KEY (username, title)
 );
+
+DROP USER 'inetproj'@'localhost';
+CREATE USER 'inetproj'@'localhost' IDENTIFIED BY 'inetpass';
+GRANT ALL PRIVILEGES ON inetdb.* TO 'inetproj'@'localhost' WITH GRANT OPTION;
