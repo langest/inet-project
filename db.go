@@ -55,8 +55,22 @@ func addUser(db *sql.DB, username, password string) (err error) {
 		err = errors.New("password too short")
 		return
 	}
-	//TODO chack that username isnt used already
-	prepStmt, err := db.Prepare("INSERT INTO users (username, password) VALUES (?, ?)")
+
+	prepStmt, err := db.Prepare("SELECT * FROM users WHERE username = ?")
+	if err != nil {
+		return
+	}
+	rows, err := prepStmt.Query(username)
+	if err != nil {
+		return
+	}
+	defer rows.Close()
+	if rows.Next() {
+		err = errors.New("username already exists")
+		return
+	}
+
+	prepStmt, err = db.Prepare("INSERT INTO users (username, password) VALUES (?, ?)")
 	if err != nil {
 		return
 	}
