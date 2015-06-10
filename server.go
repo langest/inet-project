@@ -87,7 +87,7 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 		} else if ok {
 			log.Println("logged in successfully")
 			session.Values["username"] = username
-			session.Options.MaxAge = 10
+			session.Options.MaxAge = 3600
 			//TODO show successful login page and redirect to home or something
 			session.Save(r, w)
 
