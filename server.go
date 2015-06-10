@@ -105,6 +105,7 @@ func handleLogOut(w http.ResponseWriter, r *http.Request) {
 	}
 	_, ok := session.Values["username"]
 	if !ok {
+		// Not logged in
 		http.Redirect(w, r, "../login", http.StatusFound)
 		return
 	}
